@@ -3,7 +3,11 @@ const multer = require('multer');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const Loki = require('lokijs');
+const mongoose = require('mongoose');
+
+// mongoose setup
+require( './db/index' );
+const Todo = mongoose.model( 'Todo' );
 
 //utility import
 const loadCollection = require('./utilities/loadCollection');
@@ -11,11 +15,9 @@ const cleanFolder = require('./utilities/cleanFolder');
 const parseCsv = require('./utilities/parseCsv');
 
 // setup
-const DB_NAME = 'db.json';
 const COLLECTION_NAME = 'inventory';
 const UPLOAD_PATH = 'uploads';
 const upload = multer({ dest: `${UPLOAD_PATH}/` }); // multer configuration
-const db = new Loki(`${UPLOAD_PATH}/${DB_NAME}`, { persistenceMethod: 'fs' });
 
 
 // app
@@ -25,21 +27,26 @@ app.use(cors());
 //clean db and folder
 cleanFolder(UPLOAD_PATH);
 
-app.post('/files/upload', upload.array('files', 8), async (req, res) => {
+app.post('/files/upload', upload.array('files', 8), (req, res) => {
   try {
-    const col = await loadCollection(COLLECTION_NAME, db)
+    //const col = await loadCollection(COLLECTION_NAME, db)
     req.files.forEach((file) => {    
         let filePath = file.path;
     
         onNewRecord = (record) => {
-            col.insert({sku: record['Name'], receivedDate: record['Maximum of Date']})
+            new Todo({
+                name    : record.Name,
+                updated_at : Date.now()
+            }).save( function( err, todo, count ){
+                
+            });
         };
         
         onError = (error) => console.log(error);
 
         done = (linesRead) => {
             console.log(linesRead)
-            db.saveDatabase();
+            //db.saveDatabase();
             res.sendStatus(200)
         }
 
@@ -54,8 +61,12 @@ app.post('/files/upload', upload.array('files', 8), async (req, res) => {
 
 app.get('/data', async (req, res) => {
     try {
-        const col = await loadCollection(COLLECTION_NAME, db);
-        res.send(col.data);
+        Todo.find({}, function(err, docs) {
+            if (!err){ 
+                console.log(docs);
+                res.send(docs)
+            } else {throw err;}
+        });
     } catch (err) {
         res.sendStatus(400);
     }
