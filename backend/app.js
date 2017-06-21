@@ -8,6 +8,7 @@ const Loki = require('lokijs');
 //utility import
 const loadCollection = require('./utilities/loadCollection');
 const cleanFolder = require('./utilities/cleanFolder');
+const parseCsv = require('./utilities/parseCsv');
 
 // setup
 const DB_NAME = 'db.json';
@@ -21,14 +22,31 @@ const db = new Loki(`${UPLOAD_PATH}/${DB_NAME}`, { persistenceMethod: 'fs' });
 const app = express();
 app.use(cors());
 
+//clean db and folder
 cleanFolder(UPLOAD_PATH);
 
 app.post('/files/upload', upload.array('files', 8), async (req, res) => {
   try {
     const col = await loadCollection(COLLECTION_NAME, db)
-    let data = [].concat(col.insert(req.files));
-    db.saveDatabase();
-    res.send(data.map(x => ({ id: x.$loki, fileName: x.filename, originalName: x.originalname })));
+    req.files.forEach((file) => {    
+        let filePath = file.path;
+    
+        onNewRecord = (record) => {
+            col.insert({sku: record['Name'], receivedDate: record['Maximum of Date']})
+        };
+        
+        onError = (error) => console.log(error);
+
+        done = (linesRead) => {
+            console.log(linesRead)
+            db.saveDatabase();
+            res.sendStatus(200)
+        }
+
+        const columns = true; 
+        const parsed = parseCsv(filePath, columns, onNewRecord, onError, done)
+
+    })
   } catch (err) {
     res.sendStatus(400);
   }
