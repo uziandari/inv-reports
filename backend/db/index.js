@@ -1,10 +1,11 @@
-var mongoose = require( 'mongoose' );
-var Schema   = mongoose.Schema;
- 
-var Todo = new Schema({
-    name : String,
-    updated_at : Date
-});
- 
-mongoose.model( 'Todo', Todo );
-mongoose.connect( 'mongodb://localhost/test', () => console.log('connected to the server.') );
+const mongoose = require('mongoose');
+const loginInfo = require('../userInfo/login');
+require('../models/receiptDateSchema');
+
+mongoose.connect(`mongodb://${loginInfo.user}:${loginInfo.password}@ds135382.mlab.com:35382/invreports`);
+
+const db = mongoose.connection;
+
+db.on('error', (msg) => console.log(`Database connection failed with error ${msg}`));
+
+db.once('open', () => console.log(`Database connected successfully.`))

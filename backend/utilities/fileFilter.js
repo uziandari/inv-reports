@@ -6,4 +6,4 @@ const fileFilter = function (req, file, cb) {
     cb(null, true);
 };
 
-export { fileFilter }
+export { fileFilter };

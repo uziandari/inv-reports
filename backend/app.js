@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 // mongoose setup
 require( './db/index' );
-const Todo = mongoose.model( 'Todo' );
+const Receipts = mongoose.model('Receipts');
 
 //utility import
 const loadCollection = require('./utilities/loadCollection');
@@ -29,24 +29,21 @@ cleanFolder(UPLOAD_PATH);
 
 app.post('/files/upload', upload.array('files', 8), (req, res) => {
   try {
-    //const col = await loadCollection(COLLECTION_NAME, db)
     req.files.forEach((file) => {    
         let filePath = file.path;
     
         onNewRecord = (record) => {
-            new Todo({
-                name    : record.Name,
+            new Receipts({
+                name : record['Name'],
+                receiptDate: record['Maximum of Date'],
                 updated_at : Date.now()
-            }).save( function( err, todo, count ){
-                
-            });
+            }).save(( err, receipt, count ) => console.log(`${receipt}`));
         };
         
         onError = (error) => console.log(error);
 
         done = (linesRead) => {
             console.log(linesRead)
-            //db.saveDatabase();
             res.sendStatus(200)
         }
 
@@ -61,7 +58,7 @@ app.post('/files/upload', upload.array('files', 8), (req, res) => {
 
 app.get('/data', async (req, res) => {
     try {
-        Todo.find({}, function(err, docs) {
+        Receipts.find({}, function(err, docs) {
             if (!err){ 
                 console.log(docs);
                 res.send(docs)
