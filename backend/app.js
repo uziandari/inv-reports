@@ -7,15 +7,14 @@ const mongoose = require('mongoose');
 
 // mongoose setup
 require( './db/index' );
-const Receipts = mongoose.model('Receipts');
 
 //utility import
 const loadCollection = require('./utilities/loadCollection');
 const cleanFolder = require('./utilities/cleanFolder');
 const parseCsv = require('./utilities/parseCsv');
+const fileFilter = require('./utilities/fileFilter');
 
 // setup
-const COLLECTION_NAME = 'inventory';
 const UPLOAD_PATH = 'uploads';
 const upload = multer({ dest: `${UPLOAD_PATH}/` }); // multer configuration
 
@@ -30,25 +29,37 @@ cleanFolder(UPLOAD_PATH);
 app.post('/files/upload', upload.array('files', 8), (req, res) => {
   try {
     req.files.forEach((file) => {    
-        let filePath = file.path;
+    let filePath = file.path;
     
-        onNewRecord = (record) => {
-            new Receipts({
-                name : record['Name'],
-                receiptDate: record['Maximum of Date'],
-                updated_at : Date.now()
-            }).save(( err, receipt, count ) => console.log(`${receipt}`));
-        };
-        
-        onError = (error) => console.log(error);
+    // if (!file.originalname.match(/\.(csv)$/)) {
+    //   onError(`FIle ${file.originalname} is the wrong file type. Only csv files are allowed.`);
+    // }   
 
-        done = (linesRead) => {
-            console.log(linesRead)
-            res.sendStatus(200)
+    onNewRecord = (col, record) => {
+      const Collection = mongoose.model(col);
+      if (record[Object.keys(record)[0]]) {
+        //Model.update({_id: id}, obj, {upsert: true}, function (err) {...});
+      }
+      new Collection({
+        _id: record[Object.keys(record)[0]],
+        inventoryDetails: record,
+        updated_at: Date.now()
+      }).update(( err, receipt, count ) => {
+        if (err) {
+          onError(err)
         }
+      });
+    };
+    
+    onError = (error) => console.log(error);
 
-        const columns = true; 
-        const parsed = parseCsv(filePath, columns, onNewRecord, onError, done)
+    done = (linesRead) => {
+      console.log(linesRead)
+      res.sendStatus(200)
+    }
+
+    const columns = true; 
+    const parsed = parseCsv(filePath, columns, onNewRecord, onError, done)
 
     })
   } catch (err) {

@@ -1,9 +1,9 @@
-const fileFilter = function (req, file, cb) {
-    // accept image only
-    if (!file.originalname.match(/\.(csv)$/)) {
-        return cb(new Error('Only csv files are allowed!'), false);
+const fileFilter = function (req, file, err) {
+
+    if (!file.match(/\.(csv)$/)) {
+        return err(new Error('Only csv files are allowed!'), false);
     }
-    cb(null, true);
+
 };
 
-export { fileFilter };
+module.exports = fileFilter;
