@@ -9,7 +9,6 @@ const mongoose = require('mongoose');
 require( './db/index' );
 
 //utility import
-const loadCollection = require('./utilities/loadCollection');
 const cleanFolder = require('./utilities/cleanFolder');
 const parseCsv = require('./utilities/parseCsv');
 const fileFilter = require('./utilities/fileFilter');
@@ -28,6 +27,7 @@ cleanFolder(UPLOAD_PATH);
 
 app.post('/files/upload', upload.array('files', 8), (req, res) => {
   try {
+    let filesRead = 0;
     req.files.forEach((file) => {    
     let filePath = file.path;
     
@@ -35,27 +35,36 @@ app.post('/files/upload', upload.array('files', 8), (req, res) => {
     //   onError(`FIle ${file.originalname} is the wrong file type. Only csv files are allowed.`);
     // }   
 
-    onNewRecord = (col, record) => {
+    onNewRecord = (col, record, schema) => {
       const Collection = mongoose.model(col);
-      if (record[Object.keys(record)[0]]) {
-        //Model.update({_id: id}, obj, {upsert: true}, function (err) {...});
-      }
-      new Collection({
-        _id: record[Object.keys(record)[0]],
-        inventoryDetails: record,
-        updated_at: Date.now()
-      }).update(( err, receipt, count ) => {
-        if (err) {
-          onError(err)
-        }
-      });
+      Collection.findOneAndUpdate (
+          {_id: schema._id},
+          schema,
+        //   {_id: record[Object.keys(record)[0]]},
+        //   {
+        //     _id: record[Object.keys(record)[0]],
+        //     inventoryDetails: record,
+        //     updated_at: Date.now()
+        //   }, // document to insert when nothing was found
+          {upsert: true, new: true, runValidators: true}, // options
+          function (err, res) { // callback
+              if (err) {
+                console.log(err)
+              }
+          }
+      );
     };
     
     onError = (error) => console.log(error);
 
     done = (linesRead) => {
+      filesRead++;
+      console.log(`Files read: ${filesRead}`)
       console.log(linesRead)
-      res.sendStatus(200)
+      
+      if (filesRead === req.files.length) {
+          res.sendStatus(200)
+      }
     }
 
     const columns = true; 
@@ -72,7 +81,7 @@ app.get('/data', async (req, res) => {
         Receipts.find({}, function(err, docs) {
             if (!err){ 
                 console.log(docs);
-                res.send(docs)
+                res.send(docs.length)
             } else {throw err;}
         });
     } catch (err) {

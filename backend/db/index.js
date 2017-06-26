@@ -6,7 +6,7 @@ require('../models/nsInventorySchema');
 const options = { server: { socketOptions: { keepAlive: 150000, connectTimeoutMS: 150000 } }, 
                 replset: { socketOptions: { keepAlive: 150000, connectTimeoutMS : 150000 } } };    
 
-const mongodbUri = `mongodb://${loginInfo.user}:${loginInfo.password}@ds135382.mlab.com:35382/invreports`;
+const mongodbUri = `mongodb://localhost/invreports`;
 
 mongoose.connect(mongodbUri, options);
 
