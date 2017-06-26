@@ -12,6 +12,7 @@ require( './db/index' );
 const cleanFolder = require('./utilities/cleanFolder');
 const parseCsv = require('./utilities/parseCsv');
 const fileFilter = require('./utilities/fileFilter');
+const fillSchema = require('./utilities/fillSchema');
 
 // setup
 const UPLOAD_PATH = 'uploads';
@@ -35,19 +36,14 @@ app.post('/files/upload', upload.array('files', 8), (req, res) => {
     //   onError(`FIle ${file.originalname} is the wrong file type. Only csv files are allowed.`);
     // }   
 
-    onNewRecord = (col, record, schema) => {
+    onNewRecord = (col, record) => {
       const Collection = mongoose.model(col);
+      const schema = fillSchema(col, record);
       Collection.findOneAndUpdate (
           {_id: schema._id},
           schema,
-        //   {_id: record[Object.keys(record)[0]]},
-        //   {
-        //     _id: record[Object.keys(record)[0]],
-        //     inventoryDetails: record,
-        //     updated_at: Date.now()
-        //   }, // document to insert when nothing was found
           {upsert: true, new: true, runValidators: true}, // options
-          function (err, res) { // callback
+          function (err, res) { 
               if (err) {
                 console.log(err)
               }
@@ -78,12 +74,7 @@ app.post('/files/upload', upload.array('files', 8), (req, res) => {
 
 app.get('/data', async (req, res) => {
     try {
-        Receipts.find({}, function(err, docs) {
-            if (!err){ 
-                console.log(docs);
-                res.send(docs.length)
-            } else {throw err;}
-        });
+        console.log(req)
     } catch (err) {
         res.sendStatus(400);
     }

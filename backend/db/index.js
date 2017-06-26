@@ -3,10 +3,11 @@ const loginInfo = require('../userInfo/login');
 require('../models/receiptDateSchema');
 require('../models/nsInventorySchema');
 
-const options = { server: { socketOptions: { keepAlive: 150000, connectTimeoutMS: 150000 } }, 
-                replset: { socketOptions: { keepAlive: 150000, connectTimeoutMS : 150000 } } };    
+const options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
+                replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };    
 
 const mongodbUri = `mongodb://localhost/invreports`;
+//const mongodbUri = `mongodb://${loginInfo.user}:${loginInfo.password}@ds139082.mlab.com:39082/invreports`
 
 mongoose.connect(mongodbUri, options);
 
