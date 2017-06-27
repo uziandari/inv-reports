@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const loginInfo = require('../userInfo/login');
 require('../models/receiptDateSchema');
 require('../models/nsInventorySchema');
+require('../models/caInventorySchema');
 
 const options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
                 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };    

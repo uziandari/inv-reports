@@ -1,14 +1,20 @@
+'use strict'
+
 const fs = require('fs');
 const Parse = require('csv-parse');
 const determineCol = require('./determineCol');
+const fileFilter = require('./fileFilter');
 
-const parseCsv = (filePath, columns, onNewRecord, handleError, done) => {
+
+const parseCsv = (filePath, fileName, columns, onNewRecord, handleError, done) => {
   let source = fs.createReadStream(filePath);
   
   let linesRead = 0;
 
+  let delimeter = fileFilter(fileName);
+
   let parser = Parse({
-    delimiter: ',', 
+    delimiter: delimeter, 
     columns
   });
 

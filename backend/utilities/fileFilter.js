@@ -1,7 +1,9 @@
-const fileFilter = function (req, file, err) {
+const fileFilter = function (fileName) {
 
-    if (!file.match(/\.(csv)$/)) {
-        return err(new Error('Only csv files are allowed!'), false);
+    if (fileName.match(/\.(csv)$/)) {
+        return ','
+    } else if (fileName.match(/\.(txt)$/)) {
+        return '\t'
     }
 
 };
