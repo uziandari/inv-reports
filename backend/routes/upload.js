@@ -66,12 +66,29 @@ router.post('/upload', upload.array('files', 8), (req, res) => {
 router.get('/inventory/:inv_id', (req, res) => {
   try {
     const NsInventory = mongoose.model('NsInventory');
-    NsInventory.findById(req.params.inv_id,  (err, data) => {
-      if (err) {
-        console.log(err);
-      }
-      res.json(data);
-    });
+    NsInventory.aggregate([
+      { "$match": { "_id": req.params.inv_id } },
+      {
+        "$lookup": {
+          "from": "cainventories",
+          "localField": "_id",
+          "foreignField": "_id",
+          "as": "cainventory"
+          }
+      },
+      {
+        "$lookup": {
+          "from": "receipts",
+          "localField": "_id",
+          "foreignField": "_id",
+          "as": "newreceipt"
+        }
+      },
+      { "$unwind" : "$cainventory"}
+    ]).exec(function (err, docs) {
+        console.log(docs)
+        res.json(docs);
+      });
   } catch (err) {
     console.log(err);
     res.sendStatus(400)
@@ -79,3 +96,5 @@ router.get('/inventory/:inv_id', (req, res) => {
 });
 
 module.exports = router;
+
+
