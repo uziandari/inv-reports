@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import Upload from './Upload';
+import UploadFiles from './UploadFiles';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Upload />
+        <UploadFiles />
       </div>
     );
   }

@@ -40,14 +40,14 @@ router.post('/upload', upload.array('files', 8), (req, res) => {
     
     onError = (error) => {
       console.log(error)
-      res.sendStatus(400);
+      res.sendStatus(400).send(error);
     }
 
     done = (linesRead) => {
       filesRead++;
       console.log(`Files read: ${filesRead}`)
       console.log(linesRead)
-      
+    
       if (filesRead === req.files.length) {
           res.sendStatus(200)
       }
