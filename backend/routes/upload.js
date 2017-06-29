@@ -13,10 +13,6 @@ const UPLOAD_PATH = 'uploads';
 const upload = multer({ dest: `${UPLOAD_PATH}/` }); // multer configuration
 
 //routes
-router.get('/', function(req, res) {
-    res.json({ message: 'This is the api' });   
-});
-
 router.post('/upload', upload.array('files', 8), (req, res) => {
   try {
     let filesRead = 0;

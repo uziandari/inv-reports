@@ -6,7 +6,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import IconButton from 'material-ui/IconButton';
 import ContentClear from 'material-ui/svg-icons/content/clear';
 import {red500} from 'material-ui/styles/colors';
-import CircularProgress from 'material-ui/CircularProgress/';
 import Request from 'superagent';
 
 import Loading from '../components/Loading';
@@ -43,7 +42,11 @@ export default class UploadFiles extends Component {
       }
     }
        
-    this.setState({rejectedFiles})
+    this.setState({
+      rejectedFiles,
+      filesUploading: false,
+      filesUploaded: false
+    })
   }
 
   deleteElement (index) {
@@ -53,7 +56,9 @@ export default class UploadFiles extends Component {
       }),
       filesPreview: this.state.filesPreview.filter((event, i) => {
         return i !== index;
-      })
+      }),
+      filesUploading: false,
+      filesUploaded: false
     });
   }
 
@@ -77,6 +82,8 @@ export default class UploadFiles extends Component {
           console.log("error ocurred", err);
         }
         this.setState({
+          filesPreview: [],
+          filesToBeSent: [],
           filesUploading: false,
           filesUploaded: true
         });
@@ -127,14 +134,14 @@ export default class UploadFiles extends Component {
             />
           </MuiThemeProvider>
           {
-            (this.state.filesToBeSent.length > 0) ?
+            
             (this.state.filesUploading) ? 
               <div style={styles.divStyle}>
                 <Loading />
               </div> : (this.state.filesUploaded) ?
               <div style={styles.divStyle}>
                 <LoadingComplete />
-              </div> : null : null
+              </div> : null
           }
           <div style={styles.filesListStyle}>
             Files added:
