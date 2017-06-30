@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <div className="App">
         <UploadFiles />
-        <LessNineReport />
+        {/*<LessNineReport />*/}
       </div>
     );
   }

@@ -12,7 +12,9 @@
     "lokijs": "^1.5.0",
     "mongoose": "^4.10.7",
     "multer": "^1.3.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "pouchdb": "^6.2.0",
+    "pouchdb-upsert": "^2.2.0"
   },
   "scripts": {
     "start": "nodemon backend/app.js"

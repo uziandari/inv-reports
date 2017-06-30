@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router(); 
 const multer = require('multer');
-const mongoose = require('mongoose');
+const PouchDB = require('pouchdb');
+PouchDB.plugin(require('pouchdb-upsert'));
 
 
 //utility import
@@ -11,6 +12,19 @@ const fillSchema = require('../utilities/fillSchema');
 // setup
 const UPLOAD_PATH = 'uploads';
 const upload = multer({ dest: `${UPLOAD_PATH}/` }); // multer configuration
+const db = new PouchDB('inventory');
+
+// router.get('/lessnine', (req, res) => {
+//   try {
+//     db.get('02TAY5CARTB11111111BKW01')
+//       .then((doc) => {
+//       res.send(doc)
+//     })
+// } catch (err) {
+//     console.log(err);
+//     res.sendStatus(400)
+// }   
+// });
 
 //routes
 router.post('/upload', upload.array('files', 8), (req, res) => {
@@ -20,18 +34,12 @@ router.post('/upload', upload.array('files', 8), (req, res) => {
     let filePath = file.path;
 
     onNewRecord = (col, record) => {
-      const Collection = mongoose.model(col);
-      const schema = fillSchema(col, record);
-      Collection.findOneAndUpdate (
-          {_id: schema._id},
-          schema,
-          {upsert: true, new: true, runValidators: true}, // options
-          function (err, res) { 
-              if (err) {
-                console.log(err)
-              }
-          }
-      );
+      db.upsert(record._id, (doc) => {
+        return Object.assign(doc, record);
+      }).catch((err) => {
+        console.log('err', err)
+      });
+      
     };
     
     onError = (error) => {
@@ -56,38 +64,6 @@ router.post('/upload', upload.array('files', 8), (req, res) => {
   } catch (err) {
     console.log(err)
     res.sendStatus(400);
-  }
-});
-
-router.get('/inventory/:inv_id', (req, res) => {
-  try {
-    const NsInventory = mongoose.model('NsInventory');
-    NsInventory.aggregate([
-      { "$match": { "_id": req.params.inv_id } },
-      {
-        "$lookup": {
-          "from": "cainventories",
-          "localField": "_id",
-          "foreignField": "_id",
-          "as": "cainventory"
-          }
-      },
-      {
-        "$lookup": {
-          "from": "receipts",
-          "localField": "_id",
-          "foreignField": "_id",
-          "as": "newreceipt"
-        }
-      },
-      { "$unwind" : "$cainventory"}
-    ]).exec(function (err, docs) {
-        console.log(docs)
-        res.json(docs);
-      });
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(400)
   }
 });
 

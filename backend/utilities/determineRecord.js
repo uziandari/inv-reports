@@ -1,10 +1,9 @@
-const fillSchema = (collectionName, record) => {
+const determineRecord = (collectionName, record) => {
   switch (collectionName) {
     case "Receipts":
       return ({
         _id: record['Name'],
         receiptDate: record['Maximum of Date'],
-        _rev: record._rev,
         updatedAt: Date.now()
       });
     case "NsInventory":
@@ -19,7 +18,6 @@ const fillSchema = (collectionName, record) => {
         inline: record['Inline'],
         dropShip: record['Drop Ship Item'],
         cost: record['Maximum of Average Cost'],
-        _rev: record._rev,
         updatedAt: Date.now()
       });
     case "CaInventory":
@@ -38,7 +36,6 @@ const fillSchema = (collectionName, record) => {
         pendingShipment: record['Quantity Pooled Pending Shipment'],
         flag: record['FlagDescription'],
         parentSku: record['Variation Parent SKU'],
-        _rev: record._rev,
         updatedAt: Date.now() 
       });
     default:
@@ -46,5 +43,4 @@ const fillSchema = (collectionName, record) => {
   }
 }
 
-module.exports = fillSchema;
-
+module.exports = determineRecord;

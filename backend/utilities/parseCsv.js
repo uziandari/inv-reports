@@ -2,9 +2,9 @@
 
 const fs = require('fs');
 const Parse = require('csv-parse');
-const determineCol = require('./determineCol');
 const fileFilter = require('./fileFilter');
-
+const determineFile = require('./determineFile');
+const determineRecord = require('./determineRecord');
 
 const parseCsv = (filePath, fileName, columns, onNewRecord, handleError, done) => {
   let source = fs.createReadStream(filePath);
@@ -20,10 +20,11 @@ const parseCsv = (filePath, fileName, columns, onNewRecord, handleError, done) =
 
   parser.on("readable", () => {
     let record;
-    let collectionName = determineCol(parser.options.columns.toString());
+    const col = determineFile(parser.options.columns.toString());
     while (record = parser.read()) {
       linesRead++;
-      onNewRecord(collectionName, record);
+      const inputRecord = determineRecord(col, record);
+      onNewRecord(col, inputRecord);
     }
   });
 

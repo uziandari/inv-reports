@@ -11,8 +11,6 @@ import Request from 'superagent';
 import Loading from '../components/Loading';
 import LoadingComplete from '../components/LoadingComplete';
 
-const apiBaseUrl = "http://localhost:3000/api/";
-
 injectTapEventPlugin();
 export default class UploadFiles extends Component {
   constructor(props) {
@@ -62,14 +60,24 @@ export default class UploadFiles extends Component {
     });
   }
 
-  handleClick (event) {
+  // handleFind(event) {
+  //   Request
+  //     .get('api/lessnine')
+  //     .end( (err, res) => {
+  //       if (err) {
+  //         console.log(err)
+  //       }
+  //       console.log(res.body.backStock)
+  //     });
+  // }
+
+  handleClick(event) {
     if (this.state.filesToBeSent.length > 0) {
       let filesArray = this.state.filesToBeSent;
-      let req = Request.post(apiBaseUrl + 'upload');
+      let req = Request.post('api/upload');
 
       for (let i in filesArray) {
         req.attach('files', filesArray[i])
-        console.log(filesArray[i].name)
       }
 
       this.setState({
@@ -144,11 +152,16 @@ export default class UploadFiles extends Component {
               </div> : null
           }
           <div style={styles.filesListStyle}>
-            Files added:
+            Files Pending Upload:
             <ul style={styles.list}>
               {FileList}
             </ul>
           </div>
+          {/*<MuiThemeProvider>
+            <RaisedButton label="Find Stuffs" primary={true} style={styles.button}
+              onClick={(event) => this.handleFind(event)}
+            />
+          </MuiThemeProvider>*/}
         </center>
       </div>
     )
