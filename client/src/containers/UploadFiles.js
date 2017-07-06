@@ -61,6 +61,7 @@ export default class UploadFiles extends Component {
   }
 
   handleClick(event) {
+    
     if (this.state.filesToBeSent.length > 0) {
       let filesArray = this.state.filesToBeSent;
       let req = Request.post('api/upload');
@@ -91,14 +92,15 @@ export default class UploadFiles extends Component {
     }
   }
 
-  onRequest() {
+  onRequest(event) {
+    console.log('requested')
     Request
-      .get('reports/lessnine')
+      .get('api/lessnine')
       .end( (err, res) => {
         if (err) {
           console.log(err)
         }
-        let sku = res.body;
+        let sku = res;
         console.log(sku)
         //this.setState({skus: [...this.state.skus, sku]})
       });

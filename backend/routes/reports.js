@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); 
+
+const db = require('PouchDB');
 
 
 router.get('/lessnine', (req, res) => {
   try {
-    db.get('02TTKT2CART11111111BGL01')
+    db.get('14COBKINGF7FMRHSTFSLV5601')
       .then((skus) => res.send(skus) )     
 } catch (err) {
     console.log(err);

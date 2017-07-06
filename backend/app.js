@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 
-
 //routes import
 const uploadRoutes = require('./routes/upload');
 const reportRoutes = require('./routes/reports');
