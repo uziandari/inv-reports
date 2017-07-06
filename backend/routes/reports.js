@@ -1,10 +1,12 @@
 const express = require('express');
-const router = express.Router(); 
+const router = express.Router();
+const db = require('../db'); 
 
 
 router.get('/lessnine', (req, res) => {
   try {
-      res.json({"message": "here be reports"})
+    db.get('02TTKT2CART11111111BGL01')
+      .then((skus) => res.send(skus) )     
 } catch (err) {
     console.log(err);
     res.sendStatus(400)

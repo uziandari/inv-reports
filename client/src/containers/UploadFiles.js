@@ -60,17 +60,6 @@ export default class UploadFiles extends Component {
     });
   }
 
-  // handleFind(event) {
-  //   Request
-  //     .get('api/lessnine')
-  //     .end( (err, res) => {
-  //       if (err) {
-  //         console.log(err)
-  //       }
-  //       console.log(res.body.backStock)
-  //     });
-  // }
-
   handleClick(event) {
     if (this.state.filesToBeSent.length > 0) {
       let filesArray = this.state.filesToBeSent;
@@ -102,6 +91,19 @@ export default class UploadFiles extends Component {
     }
   }
 
+  onRequest() {
+    Request
+      .get('reports/lessnine')
+      .end( (err, res) => {
+        if (err) {
+          console.log(err)
+        }
+        let sku = res.body;
+        console.log(sku)
+        //this.setState({skus: [...this.state.skus, sku]})
+      });
+  }
+
   render() {
 
     const FileList = this.state.filesPreview.map((file, index) => 
@@ -117,6 +119,7 @@ export default class UploadFiles extends Component {
 
     return (
       <div className="upload">
+        <button onClick={(event) => this.onRequest(event)}>click</button>
         <MuiThemeProvider>
           <div>
             {/*appbar*/}
@@ -157,11 +160,6 @@ export default class UploadFiles extends Component {
               {FileList}
             </ul>
           </div>
-          {/*<MuiThemeProvider>
-            <RaisedButton label="Find Stuffs" primary={true} style={styles.button}
-              onClick={(event) => this.handleFind(event)}
-            />
-          </MuiThemeProvider>*/}
         </center>
       </div>
     )

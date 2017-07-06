@@ -19,23 +19,28 @@ export default class LessNineReport extends Component {
           console.log(err)
         }
         console.log(res)
-        this.setState({skus: res.body})
+        let sku = res.body;
+        this.setState({skus: [...this.state.skus, sku]})
       });
   }
-
+  
   render() {
     return (
       <div className="search-sku">
-        <ul>
-        {
-          this.state.skus.map((sku) =>
-            <li key={sku._id}>
-              {sku._id}
-              <hr />
-            </li>
-          )
-        }
-        </ul>
+        {console.log('skus', this.state.skus)}
+         { (this.state.skus.length > 0) ? 
+          <ul>
+            {
+              this.state.skus.map((sku) =>
+                <li key={sku._id}>
+                  {sku._id}
+                  <hr />
+                </li>
+              )
+            }
+            </ul>
+            : null
+         }
       </div>
     );
   }

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+
 
 //routes import
 const uploadRoutes = require('./routes/upload');
@@ -11,7 +11,6 @@ const cleanFolder = require('./utilities/cleanFolder');
 
 // setup
 const UPLOAD_PATH = 'uploads';
-
 
 // app
 const app = express();
