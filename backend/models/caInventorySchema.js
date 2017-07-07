@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
  
 const caInventorySchema = new Schema({
   _id: String,
-  quantityAvailable: Number,
+  quantityAvailable: {type: Number, index: true},
   pendingCheckout: Number,
   pendingPayment: Number,
   pendingShipment: Number,

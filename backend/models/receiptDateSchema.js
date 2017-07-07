@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
  
 const newReceiptsSchema = new Schema({
      _id: String,
-    receiptDate: Date,
+    receiptDate: {type: Date, index: true},
     updatedAt : { type: Date, default: Date.now } 
 });
 

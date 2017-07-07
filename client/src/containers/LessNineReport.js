@@ -19,7 +19,11 @@ export default class LessNineReport extends Component {
           console.log(err)
         }
         console.log(res)
-        this.setState({skus: res.body})
+        if (res.body) {
+          this.setState({skus: res.body})
+        } else {
+          console.log('null returned')
+        }
       });
   }
 
@@ -31,6 +35,12 @@ export default class LessNineReport extends Component {
           this.state.skus.map((sku) =>
             <li key={sku._id}>
               {sku._id}
+              {sku.hasOwnProperty('nsinventory') ? 
+                sku.nsinventory.description
+               : null}
+              {sku.hasOwnProperty('newreceipt') ? 
+                sku.newreceipt.receiptDate
+               : null}
               <hr />
             </li>
           )

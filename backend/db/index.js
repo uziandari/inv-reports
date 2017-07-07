@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const loginInfo = require('../userInfo/login');
+//const loginInfo = require('../userInfo/login');
 require('../models/receiptDateSchema');
 require('../models/nsInventorySchema');
 require('../models/caInventorySchema');
